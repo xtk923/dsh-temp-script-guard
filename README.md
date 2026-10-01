@@ -43,22 +43,40 @@ session legitimately works on files named `tmp_*`.
 
 ## Install
 
+DSH installs a plugin from a registry-shaped source. This one ships from its
+own repository:
+
 ```bash
-dsh plugin --profile desktop add link:C:/Workspace/dsh-temp-script-guard
+dsh plugin --profile desktop add github:xtk923/dsh-temp-script-guard
 ```
 
-then add `dsh-temp-script-guard` to `dsh.profile.bundles` in the profile's
-`package.json`. On this machine both steps were done by the plugin manager, so
-the profile already reads:
+and `dsh-temp-script-guard` goes into `dsh.profile.bundles` in the profile's
+`package.json` — `plugin_manager install_bundle` performs both steps, so the
+profile reads:
 
 ```json
-"dependencies": { "dsh-temp-script-guard": "link:C:/Workspace/dsh-temp-script-guard" },
+"dependencies": { "dsh-temp-script-guard": "github:xtk923/dsh-temp-script-guard" },
 "dsh": { "profile": { "bundles": [ "...", "dsh-temp-script-guard" ] } }
 ```
 
-The dependency is a **junction** to this directory, so editing `src/index.js`
-is picked up by the next load without reinstalling — but deleting this
-directory breaks the profile's plugin.
+pnpm records the GitHub tarball pinned to one commit, so the install is
+reproducible:
+
+```yaml
+dsh-temp-script-guard:
+  specifier: github:xtk923/dsh-temp-script-guard
+  version: https://codeload.github.com/xtk923/dsh-temp-script-guard/tar.gz/<sha>
+```
+
+The result is a **real directory** in the profile's `node_modules`, like every
+other installed plugin. That distinction matters: DSH treats `link:` and
+`file:` specs as *local development* installs — the market's own restore path
+accepts them under that name, they do not travel in a profile backup, and a
+local path that disappears blocks every later install and uninstall in the
+profile. To pick up a new commit, push it and reinstall.
+
+For a faster edit loop, `dsh plugin --profile desktop add link:<this directory>`
+makes the profile follow this checkout live — at the cost of the above.
 
 ## Verify
 
