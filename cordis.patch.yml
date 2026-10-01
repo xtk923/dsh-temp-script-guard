@@ -1,0 +1,18 @@
+# The temp-script-guard bundle patch.
+#
+# Adding `dsh-temp-script-guard` to a profile's `dsh.profile.bundles` applies
+# this automatically — there is no YAML for a user to hand-write.
+#
+# The entry name is the BARE package name deliberately: the client-module
+# scanner treats it as a package specifier and resolves `<name>/package.json`,
+# and a subpath entry name fails that resolve.
+#
+# Delete `mode` (or set it to `off`) to keep the four tools but stop refusing
+# scratch scripts written into a project.
+- insert:
+    - id: temp-script-guard
+      name: dsh-temp-script-guard
+      config:
+        mode: deny
+        managedDir: ~/tools/temp-scripts
+        olderThanDays: 7

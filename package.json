@@ -1,0 +1,35 @@
+{
+  "name": "dsh-temp-script-guard",
+  "version": "0.1.0",
+  "description": "Enforce the temp-script-manager discipline in DeepSeek Harness: refuse scratch scripts written into a project, own their lifecycle in ~/tools/temp-scripts, and list, purge or promote them from tools",
+  "type": "module",
+  "license": "MIT",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "temp-scripts",
+    "housekeeping"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
